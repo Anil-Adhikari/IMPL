@@ -1,0 +1,102 @@
+%package "edu.ecu.cs.seng6245.imp.parser";
+%class "ExpressionParser";
+%import "edu.ecu.cs.seng6245.imp.ast.*";
+
+%terminals NUMBER, IDENTIFIER, MULT, DIV, PLUS, MINUS, LPAREN, RPAREN, EQ, SEMI,
+           WHILE, BEGIN, THEN, ELSE, END, FOR, TO, IF, LTEQ, GTEQ, LT, GT,
+           EQ, NEQ, DO, ASSIGN, LSQUARE, RSQUARE, IN, NOTIN, LCURLY, RCURLY,
+           HASH, BANG, COMMA, FOREACH, USING, PRINT, TRUE, FALSE, STRING,
+           SUBSET, HEAD, TAIL, AND, OR;
+
+%left RPAREN;
+%left HASH, BANG;
+%right UNARY_MINUS;
+%left MULT, DIV;
+%left PLUS, MINUS;
+%left AND, OR;
+%left IN, NOTIN, GTEQ, GT, LTEQ, LT, EQ, NEQ, SUBSET;
+
+%typeof NUMBER = "Number";
+%typeof IDENTIFIER = "String";
+%typeof STRING = "String";
+%typeof expr = "Expression";
+%typeof stmt = "Statement";
+%typeof stmts = "StatementList";
+%typeof numlist = "NumberList";
+%typeof boollist = "BooleanList";
+%typeof strlist = "StringList";
+
+%goal stmt;
+%goal expr;
+
+stmts
+    = stmt.s                        {: return new StatementList(s);    :}
+    | stmt.s stmts.ss               {: return new StatementList(s,ss); :}
+    ;
+
+stmt
+    = expr.a SEMI                                                  {: return new ExprStatement(a);          :}
+    | IDENTIFIER.i ASSIGN expr.a SEMI                              {: return new AssignStatement(i,a);      :}
+    | IF LPAREN expr.c RPAREN THEN stmt.tc ELSE stmt.fc            {: return new IfStatement(c,tc,fc);      :}
+    | WHILE LPAREN expr.c RPAREN stmt.b                            {: return new WhileStatement(c,b);       :}
+    | FOR IDENTIFIER.i ASSIGN NUMBER.s TO NUMBER.f DO stmt.b       {: return new ForStatement(i,s,f,b);     :}
+    | BEGIN stmts.ss END                                           {: return new BlockStatement(ss);        :}
+    | FOREACH IDENTIFIER.i IN expr.a                    DO stmt.b  {: return new ForEachStatement(i,a,"",b);:}
+    | FOREACH IDENTIFIER.i IN expr.a USING IDENTIFIER.j DO stmt.b  {: return new ForEachStatement(i,a,j,b); :}
+    | PRINT expr.a SEMI                                            {: return new PrintStatement(a);         :}
+    ;
+
+expr
+    = expr.a MULT expr.b            {: return new MultExpression(a,b);                                 :}
+    | expr.a DIV expr.b             {: return new DivExpression(a,b);                                  :}
+    | expr.a PLUS expr.b            {: return new PlusExpression(a,b);                                 :}
+    | expr.a LTEQ expr.b            {: return new LtEqExpression(a,b);                                 :}
+    | expr.a LT expr.b              {: return new LtExpression(a,b);                                   :}
+    | expr.a GTEQ expr.b            {: return new GtEqExpression(a,b);                                 :}
+    | expr.a GT expr.b              {: return new GtExpression(a,b);                                   :}
+    | expr.a EQ expr.b              {: return new EqExpression(a,b);                                   :}
+    | expr.a NEQ expr.b             {: return new NeqExpression(a,b);                                  :}
+    | expr.a MINUS expr.b           {: return new MinusExpression(a,b);                                :}
+    | expr.a IN expr.b              {: return new InExpression(a,b);                                   :}
+    | expr.a NOTIN expr.b           {: return new NotInExpression(a,b);                                :}
+    | expr.a LSQUARE expr.b RSQUARE {: return new IndexExpression(a,b);                                :}
+    | HASH expr.a                   {: return new SizeExpression(a);                                   :}
+    | BANG expr.a                   {: return new GetOneFromExpression(a);                             :}
+    | LPAREN expr.e RPAREN          {: return e;                                                       :}
+    | MINUS expr.e @ UNARY_MINUS    {: return new UnaryMinusExpression(e);                             :}
+    | NUMBER.n                      {: return new LiteralExpression(new IntegerLiteral(n.intValue())); :}
+    | STRING.s                      {: return new LiteralExpression(new StringLiteral(s));             :}
+    | TRUE                          {: return new LiteralExpression(new BooleanLiteral(true));         :}
+    | FALSE                         {: return new LiteralExpression(new BooleanLiteral(false));        :}
+    | IDENTIFIER.i                  {: return new IdExpression(i);                                     :}
+    | LCURLY RCURLY                 {: return new LiteralExpression(new EmptySet());                   :}
+    | LSQUARE RSQUARE               {: return new LiteralExpression(new EmptyList());                  :}
+    | LCURLY numlist.l RCURLY       {: return new LiteralExpression(new NumericSetLiteral(l));         :}
+    | LSQUARE numlist.l RSQUARE     {: return new LiteralExpression(new NumericListLiteral(l));        :}
+    | LCURLY boollist.l RCURLY      {: return new LiteralExpression(new BooleanSetLiteral(l));         :}
+    | LSQUARE boollist.l RSQUARE    {: return new LiteralExpression(new BooleanListLiteral(l));        :}
+    | LCURLY strlist.l RCURLY       {: return new LiteralExpression(new StringSetLiteral(l));          :}
+    | LSQUARE strlist.l RSQUARE     {: return new LiteralExpression(new StringListLiteral(l));         :}
+    | expr.a OR expr.b              {: return new UnionExpression(a,b);                                :}
+    | expr.a AND expr.b             {: return new IntersectionExpression(a,b);                         :}
+    | expr.a SUBSET expr.b          {: return new SubsetOfExpression(a,b);                             :}
+    | HEAD LPAREN expr.a RPAREN     {: return new HeadExpression(a);                                   :}
+    | TAIL LPAREN expr.a RPAREN     {: return new TailExpression(a);                                   :}
+    ;
+
+numlist
+    = NUMBER.n                      {: return new NumberList(n);                                       :}
+    | NUMBER.n COMMA numlist.l      {: return new NumberList(n,l);                                     :}
+    ;
+
+boollist
+    = TRUE                          {: return new BooleanList(true);                                   :}
+    | FALSE                         {: return new BooleanList(false);                                  :}
+    | TRUE COMMA boollist.l         {: return new BooleanList(true,l);                                 :}
+    | FALSE COMMA boollist.l        {: return new BooleanList(false,l);                                :}
+    ;
+
+strlist
+    = STRING.s                      {: return new StringList(s);                                       :}
+    | STRING.s COMMA strlist.l      {: return new StringList(s,l);                                     :}
+    ;
