@@ -223,7 +223,7 @@ class GenericSet<E> implements ISet<E> {
         List<E> plist = new ArrayList<>(intSet);
         HashSet<Integer> pset = new HashSet<>();
         for(int i = 0; i < plist.size();i++){
-            if(plist.get(i).getClass().getName().equals("Integer")){
+            if(plist.get(i) instanceof Integer){
                 pset.add((Integer) plist.get(i));
             }
         }
