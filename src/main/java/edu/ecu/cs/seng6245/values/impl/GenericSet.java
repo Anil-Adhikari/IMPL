@@ -83,20 +83,43 @@ class GenericSet<E> implements ISet<E> {
 
     @Override
     public ISet<E> union(ISet<E> set) {
-        // TODO Add the code for set union here.
-        return null;
+        // Returns a new set with all the elements of two sets both common and uncommon element
+        HashSet<E> pset = new HashSet<>();
+        for(E elm : this.intSet){
+            pset.add(elm);
+        }
+        Iterator<E> itr = set.getStandardIterator();
+        while(itr.hasNext()){
+            pset.add(itr.next());
+        }
+
+        return new GenericSet<>(pset);
     }
 
     @Override
     public ISet<E> intersection(ISet<E> set) {
-        // TODO Add the code for set intersection here.
-        return null;
+        // Returns a new set with only the common element among two sets
+        HashSet<E> pset = new HashSet<>();
+        for(E elm : this.intSet){
+            Iterator<E> itr = set.getStandardIterator();
+            while(itr.hasNext()){
+                if(elm.equals(itr.next())) pset.add(elm);
+            }
+        }
+        return new GenericSet<>(pset);
     }
 
     @Override
     public boolean subsetOf(ISet<E> set) {
-        // TODO Add the code for subset of here.
-        return false;
+        // Returns true if this is subset of set
+        int count = 0;
+        for(E elm : this.intSet){
+            Iterator<E> itr = set.getStandardIterator();
+            while(itr.hasNext()){
+                if(elm.equals(itr.next())) count++;
+            }
+        }
+        return count == this.intSet.size();
     }
 
     @SuppressWarnings("ConstantConditions")
