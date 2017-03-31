@@ -12,15 +12,15 @@ import java.util.Set;
 import edu.ecu.cs.seng6245.imp.exceptions.EmptySetException;
 import edu.ecu.cs.seng6245.values.ISet;
 
-class IntegerSet implements ISet<Integer> {
+class GenericSet<E> implements ISet<E> {
     /** The internal representation of the integer set */
-    private final HashSet<Integer> intSet;
+    private final HashSet<E> intSet;
 
     /**
      * Create a new, empty set of integers
      *
      */
-    public IntegerSet() {
+    public GenericSet() {
         intSet = new HashSet<>();
     }
 
@@ -29,39 +29,39 @@ class IntegerSet implements ISet<Integer> {
      *
      * @param hs The set backing our integer set implementation.
      */
-    protected IntegerSet(HashSet<Integer> hs) {
+    protected GenericSet(HashSet<E> hs) {
         if (hs == null) throw new NullPointerException("Initializing Hash Set cannot be null");
         intSet = hs;
     }
 
     @Override
-    public ISet<Integer> insert(Integer i) {
+    public ISet<E> insert(E i) {
         if (i == null) throw new NullPointerException("Element to insert cannot be null");
 
         if (intSet.contains(i)) {
             return this;
         } else {
-            HashSet<Integer> hs = new HashSet<>(intSet);
+            HashSet<E> hs = new HashSet<>(intSet);
             hs.add(i);
-            return new IntegerSet(hs);
+            return new GenericSet<>(hs);
         }
     }
 
     @Override
-    public ISet<Integer> remove(Integer i) {
+    public ISet<E> remove(E i) {
         if (i == null) throw new NullPointerException("Element to remove cannot be null");
 
         if (!intSet.contains(i)) {
             return this;
         } else {
-            HashSet<Integer> hs = new HashSet<>(intSet);
+            HashSet<E> hs = new HashSet<>(intSet);
             hs.remove(i);
-            return new IntegerSet(hs);
+            return new GenericSet<>(hs);
         }
     }
 
     @Override
-    public boolean in(Integer i) {
+    public boolean in(E i) {
         if (i == null) throw new NullPointerException("Element to check for membership cannot be null");
         return intSet.contains(i);
     }
@@ -72,29 +72,29 @@ class IntegerSet implements ISet<Integer> {
     }
 
     @Override
-    public Integer getOneFrom() {
+    public E getOneFrom() {
         if (intSet.isEmpty()) {
             throw new EmptySetException("getOneFrom cannot be called on an empty set");
         }
-        List<Integer> lst = new ArrayList<>(intSet);
+        List<E> lst = new ArrayList<>(intSet);
         Collections.shuffle(lst);
         return lst.get(0);
     }
 
     @Override
-    public ISet<Integer> union(ISet<Integer> set) {
+    public ISet<E> union(ISet<E> set) {
         // TODO Add the code for set union here.
         return null;
     }
 
     @Override
-    public ISet<Integer> intersection(ISet<Integer> set) {
+    public ISet<E> intersection(ISet<E> set) {
         // TODO Add the code for set intersection here.
         return null;
     }
 
     @Override
-    public boolean subsetOf(ISet<Integer> set) {
+    public boolean subsetOf(ISet<E> set) {
         // TODO Add the code for subset of here.
         return false;
     }
@@ -121,7 +121,7 @@ class IntegerSet implements ISet<Integer> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        IntegerSet other = (IntegerSet) obj;
+        GenericSet other = (GenericSet) obj;
         if (intSet == null) {
             if (other.intSet != null)
                 return false;
@@ -139,7 +139,7 @@ class IntegerSet implements ISet<Integer> {
         StringBuilder buf = new StringBuilder();
         buf.append("{");
         boolean firstItem = true;
-        for (Integer i : intSet) {
+        for (E i : intSet) {
             if (!firstItem) {
                 buf.append(", ");
             } else {
@@ -166,7 +166,7 @@ class IntegerSet implements ISet<Integer> {
             return false;
         }
 
-        for (Integer num : intSet) {
+        for (E num : intSet) {
             if (num == null) {
                 return false;
             }
@@ -174,8 +174,8 @@ class IntegerSet implements ISet<Integer> {
 
         // NOTE: The HashSet already takes care of duplicates, but if we wanted to check
         // for them anyway, we would want to do something like the following
-        HashSet<Integer> seenBefore = new HashSet<>();
-        for (Integer num : intSet) {
+        HashSet<E> seenBefore = new HashSet<>();
+        for (E num : intSet) {
             if (seenBefore.contains(num)) {
                 return false;
             }
@@ -186,25 +186,32 @@ class IntegerSet implements ISet<Integer> {
     }
 
     @Override
-    public Iterator<Integer> getStandardIterator() {
-        return new StandardSetIterator(intSet);
+    public Iterator<E> getStandardIterator() {
+        return new StandardSetIterator<>(intSet);
     }
 
     @Override
-    public Iterator<Integer> getSortedIterator() {
-        return new SortedSetIterator(intSet);
+    public Iterator<E> getSortedIterator() {
+        return new SortedSetIterator(intSet); //TODO:
     }
 
     @Override
     public Iterator<Integer> getEvenIterator() {
-        return new EvenSetIterator(intSet);
+        List<E> plist = new ArrayList<>(intSet);
+        HashSet<Integer> pset = new HashSet<>();
+        for(int i = 0; i < plist.size();i++){
+            if(plist.get(i).getClass().getName().equals("Integer")){
+                pset.add((Integer) plist.get(i));
+            }
+        }
+        return new EvenSetIterator(pset);
     }
 
-    private static class StandardSetIterator implements Iterator<Integer> {
-        private final List<Integer> localSetAsList;
+    private static class StandardSetIterator<E> implements Iterator<E> {
+        private final List<E> localSetAsList;
         private int currentIndex;
 
-        public StandardSetIterator(Set<Integer> intSet) {
+        public StandardSetIterator(Set<E> intSet) {
             // We turn this into a list so we can use standard indexing operations
             // to work our way through; we could also use the normal iterator returned
             // by the set itself, in which case we would have an instance variable
@@ -219,7 +226,7 @@ class IntegerSet implements ISet<Integer> {
         }
 
         @Override
-        public Integer next() {
+        public E next() {
             if (currentIndex < localSetAsList.size()) {
                 return localSetAsList.get(currentIndex++);
             } else {
@@ -228,12 +235,12 @@ class IntegerSet implements ISet<Integer> {
         }
     }
 
-    private static class SortedSetIterator implements Iterator<Integer> {
-        private final List<Integer> localSetAsList;
+    private static class SortedSetIterator<E extends Comparable<E>> implements Iterator<E> {
+        private final List<E> localSetAsList;
         private int currentIndex;
 
-        public SortedSetIterator(Set<Integer> intSet) {
-            List<Integer> l = new ArrayList<>(intSet);
+        public SortedSetIterator(Set<E> intSet) {
+            List<E> l = new ArrayList<>(intSet);
             Collections.sort(l);
             localSetAsList = l;
             currentIndex = 0;
@@ -245,7 +252,7 @@ class IntegerSet implements ISet<Integer> {
         }
 
         @Override
-        public Integer next() {
+        public E next() {
             if (currentIndex < localSetAsList.size()) {
                 return localSetAsList.get(currentIndex++);
             } else {

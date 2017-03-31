@@ -21,61 +21,61 @@ public class ValueFactory {
      * Create a new integer set with the given elements
      */
     public ISet<Integer> makeIntegerSet() {
-        return new IntegerSet();
+        return new GenericSet<>();
     }
 
     /**
      * Create a new integer list with the given elements
      */
     public IList<Integer> makeIntegerList() {
-        return new IntegerList();
+        return new GenericList<>();
     }
 
     /**
      * Create a new empty string set
      */
     public ISet<String> makeStringSet() {
-        // TODO: What should actually be returned here? This should not return null!
-		return null;
+        // Returns new generic set with type parameter String
+        return new GenericSet<>();
     }
 
     /**
      * Create a new empty string list
      */
     public IList<String> makeStringList() {
-		// TODO: What should actually be returned here? This should not return null!
-		return null;
+        // Returns new generic list with type parameter String
+        return new GenericList<>();
     }
 
     /**
      * Create a new empty boolean set
      */
     public ISet<Boolean> makeBooleanSet() {
-		// TODO: What should actually be returned here? This should not return null!
-		return null;
+        // Returns new generic set with type parameter Boolean
+        return new GenericSet<>();
     }
 
     /**
      * Create a new empty boolean list
      */
     public IList<Boolean> makeBooleanList() {
-		// TODO: What should actually be returned here? This should not return null!
-		return null;
+        // Returns new generic list with type parameter Boolean
+        return new GenericList<>();
     }
 
     /**
      * Create a new ImpElement set
      */
     public ISet<ImpElement> makeImpElementSet() {
-		// TODO: What should actually be returned here? This should not return null!
-		return null;
+        // Returns new generic set with type parameter ImpElement
+        return new GenericSet<>();
     }
 
     /**
      * Create a new ImpElement list
      */
     public IList<ImpElement> makeImpElementList() {
-		// TODO: What should actually be returned here? This should not return null!
-		return null;
+		// Returns new generic list with type parameter ImpElement
+		return new GenericList<>();
     }
 }

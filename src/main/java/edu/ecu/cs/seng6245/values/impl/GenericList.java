@@ -1,12 +1,8 @@
 package edu.ecu.cs.seng6245.values.impl;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
+import edu.ecu.cs.seng6245.imp.exceptions.EmptyListException;
 import edu.ecu.cs.seng6245.imp.exceptions.ListIndexException;
 import edu.ecu.cs.seng6245.values.IList;
 
@@ -14,33 +10,33 @@ import edu.ecu.cs.seng6245.values.IList;
  * Implementation of a mutable list of integers.
  *
  */
-class IntegerList implements IList<Integer> {
+class GenericList<E> implements IList<E> {
     /** The internal representation of the integer list */
-    private final LinkedList<Integer> intList;
+    private final LinkedList<E> intList;
 
     /**
      * Create a new, empty list of integers.
      */
-    protected IntegerList() {
+    protected GenericList() {
         intList = new LinkedList<>();
     }
 
     @Override
-    public IList<Integer> insertAtStart(Integer i) {
+    public IList<E> insertAtStart(E i) {
         if (i == null) throw new NullPointerException("Element to insert cannot be null");
         intList.addFirst(i);
         return this;
     }
 
     @Override
-    public IList<Integer> insertAtEnd(Integer i) {
+    public IList<E> insertAtEnd(E i) {
         if (i == null) throw new NullPointerException("Element to insert cannot be null");
         intList.addLast(i);
         return this;
     }
 
     @Override
-    public IList<Integer> remove(Integer i) {
+    public IList<E> remove(E i) {
         if (i == null) throw new NullPointerException("Element to remove cannot be null");
         //noinspection StatementWithEmptyBody
         while (intList.remove(i));
@@ -48,7 +44,7 @@ class IntegerList implements IList<Integer> {
     }
 
     @Override
-    public boolean in(Integer i) {
+    public boolean in(E i) {
         if (i == null) throw new NullPointerException("Element to check for membership cannot be null");
         return intList.contains(i);
     }
@@ -59,25 +55,32 @@ class IntegerList implements IList<Integer> {
     }
 
     @Override
-    public Integer get(Integer idx) {
+    public E get(Integer idx) {
         if (idx == null) throw new NullPointerException("Index idx cannot be null");
-        if (idx > 0 && idx <= intList.size()) {
-            return intList.get(idx-1);
-        } else {
+        if (idx > 0 && idx <= intList.size()){
+            return intList.get(idx - 1);
+        }
+        else {
             throw new ListIndexException("Cannot get out of bounds index", idx, intList.size());
         }
     }
 
     @Override
-    public Integer head() {
-        // TODO Add the code for head here.
-        return null;
+    public E head() {
+        // Returns the first element if the set is not empty, otherwise throws an EmptyListException
+        if(intList.isEmpty()) throw new EmptyListException("The list is empty.");
+        return intList.get(0);
     }
 
     @Override
-    public IList<Integer> tail() {
-        // TODO Add the code for tail here.
-        return null;
+    public IList<E> tail() {
+        // Returns the list except first element if the set is not empty, otherwise throws an EmptyListException
+        if(intList.isEmpty()) throw new EmptyListException("The list is empty.");
+        GenericList<E> pg = new GenericList<>();
+        for(int i = 1; i < this.size();i++){
+            pg.insertAtEnd(this.intList.get(i));
+        }
+        return pg;
     }
 
     @Override
@@ -87,7 +90,7 @@ class IntegerList implements IList<Integer> {
         StringBuilder buf = new StringBuilder();
         buf.append("[");
         boolean firstItem = true;
-        for (Integer i : intList) {
+        for (E i : intList) {
             if (!firstItem) {
                 buf.append(", ");
             } else {
@@ -121,7 +124,7 @@ class IntegerList implements IList<Integer> {
             return false;
         }
 
-        for (Integer num : intList) {
+        for (E num : intList) {
             if (num == null) {
                 return false;
             }
@@ -131,25 +134,25 @@ class IntegerList implements IList<Integer> {
     }
 
     @Override
-    public Iterator<Integer> getStandardIterator() {
-        return new StandardListIterator(intList);
+    public Iterator<E> getStandardIterator() {
+        return new StandardListIterator<>(intList);
     }
 
     @Override
-    public Iterator<Integer> getUniqueIterator() {
-        return new UniqueListIterator(intList);
+    public Iterator<E> getUniqueIterator() {
+        return new UniqueListIterator<>(intList);
     }
 
     @Override
-    public Iterator<Integer> getSortedIterator() {
-        return new SortedListIterator(intList);
+    public Iterator<E> getSortedIterator() {
+        return new SortedListIterator(intList); //TODO:
     }
 
-    private static class StandardListIterator implements Iterator<Integer> {
+    private static class StandardListIterator<E> implements Iterator<E> {
         private int currentIndex;
-        private final List<Integer> localList;
+        private final List<E> localList;
 
-        public StandardListIterator(List<Integer> intList) {
+        public StandardListIterator(List<E> intList) {
             localList = intList;
             currentIndex = 0;
         }
@@ -160,7 +163,7 @@ class IntegerList implements IList<Integer> {
         }
 
         @Override
-        public Integer next() {
+        public E next() {
             if (currentIndex < localList.size()) {
                 return localList.get(currentIndex++);
             } else {
@@ -169,12 +172,12 @@ class IntegerList implements IList<Integer> {
         }
     }
 
-    private static class UniqueListIterator implements Iterator<Integer> {
-        private final List<Integer> localList;
-        private HashSet<Integer> seenBefore;
+    private static class UniqueListIterator<E> implements Iterator<E> {
+        private final List<E> localList;
+        private HashSet<E> seenBefore;
         private int currentIndex = 0;
 
-        public UniqueListIterator(List<Integer> intList) {
+        public UniqueListIterator(List<E> intList) {
             localList = intList;
             seenBefore = new HashSet<>();
         }
@@ -185,11 +188,11 @@ class IntegerList implements IList<Integer> {
         }
 
         @Override
-        public Integer next() {
+        public E next() {
             if (currentIndex >= localList.size()) {
                 throw new NoSuchElementException("No next element in the unique list iterator: UniqueListIterator.next");
             }
-            Integer res = localList.get(currentIndex++);
+            E res = localList.get(currentIndex++);
             seenBefore.add(res);
             while (currentIndex < localList.size() && seenBefore.contains(localList.get(currentIndex))) {
                 ++currentIndex;
@@ -198,14 +201,14 @@ class IntegerList implements IList<Integer> {
         }
     }
 
-    private static class SortedListIterator implements Iterator<Integer> {
-        private final List<Integer> localList;
+    private static class SortedListIterator<E extends Comparable<E>> implements Iterator<E> {
+        private final List<E> localList;
         private int currentIndex;
 
-        public SortedListIterator(List<Integer> intList) {
-            List<Integer> l = new LinkedList<>(intList);
+        public SortedListIterator(List<E> intList) {
+            List<E> l = new LinkedList<>(intList);
             // This sorts in place, so we really do need to make the copy above
-            Collections.sort(l);
+            Collections.sort(l); //sort only works on the type E which is comparable or extends generic Comparable
             localList = l;
             currentIndex = 0;
         }
@@ -216,7 +219,7 @@ class IntegerList implements IList<Integer> {
         }
 
         @Override
-        public Integer next() {
+        public E next() {
             if (currentIndex < localList.size()) {
                 return localList.get(currentIndex++);
             } else {
