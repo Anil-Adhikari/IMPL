@@ -12,26 +12,26 @@ import edu.ecu.cs.seng6245.values.IList;
  */
 class GenericList<E> implements IList<E> {
     /** The internal representation of the integer list */
-    private final LinkedList<E> intList;
+    private final LinkedList<E> genericList;
 
     /**
      * Create a new, empty list of integers.
      */
     protected GenericList() {
-        intList = new LinkedList<>();
+        genericList = new LinkedList<>();
     }
 
     @Override
     public IList<E> insertAtStart(E i) {
         if (i == null) throw new NullPointerException("Element to insert cannot be null");
-        intList.addFirst(i);
+        genericList.addFirst(i);
         return this;
     }
 
     @Override
     public IList<E> insertAtEnd(E i) {
         if (i == null) throw new NullPointerException("Element to insert cannot be null");
-        intList.addLast(i);
+        genericList.addLast(i);
         return this;
     }
 
@@ -39,58 +39,58 @@ class GenericList<E> implements IList<E> {
     public IList<E> remove(E i) {
         if (i == null) throw new NullPointerException("Element to remove cannot be null");
         //noinspection StatementWithEmptyBody
-        while (intList.remove(i));
+        while (genericList.remove(i));
         return this;
     }
 
     @Override
     public boolean in(E i) {
         if (i == null) throw new NullPointerException("Element to check for membership cannot be null");
-        return intList.contains(i);
+        return genericList.contains(i);
     }
 
     @Override
     public Integer size() {
-        return intList.size();
+        return genericList.size();
     }
 
     @Override
     public E get(Integer idx) {
         if (idx == null) throw new NullPointerException("Index idx cannot be null");
-        if (idx > 0 && idx <= intList.size()){
-            return intList.get(idx - 1);
+        if (idx > 0 && idx <= genericList.size()){
+            return genericList.get(idx - 1);
         }
         else {
-            throw new ListIndexException("Cannot get out of bounds index", idx, intList.size());
+            throw new ListIndexException("Cannot get out of bounds index", idx, genericList.size());
         }
     }
 
     @Override
     public E head() {
         // Returns the first element if the set is not empty, otherwise throws an EmptyListException
-        if(intList.isEmpty()) throw new EmptyListException("The list is empty.");
-        return intList.get(0);
+        if(genericList.isEmpty()) throw new EmptyListException("The list is empty.");
+        return genericList.get(0);
     }
 
     @Override
     public IList<E> tail() {
         // Returns the list except first element if the set is not empty, otherwise throws an EmptyListException
-        if(intList.isEmpty()) throw new EmptyListException("The list is empty.");
+        if(genericList.isEmpty()) throw new EmptyListException("The list is empty.");
         GenericList<E> pg = new GenericList<>();
         for(int i = 1; i < this.size();i++){
-            pg.insertAtEnd(this.intList.get(i));
+            pg.insertAtEnd(this.genericList.get(i));
         }
         return pg;
     }
 
     @Override
     public String toString() {
-        // AF(c) = [ c.intList[i].intValue | 0 <= i < c.intList.size ]
+        // AF(c) = [ c.genericList[i].intValue | 0 <= i < c.genericList.size ]
 
         StringBuilder buf = new StringBuilder();
         buf.append("[");
         boolean firstItem = true;
-        for (E i : intList) {
+        for (E i : genericList) {
             if (!firstItem) {
                 buf.append(", ");
             } else {
@@ -117,14 +117,14 @@ class GenericList<E> implements IList<E> {
      */
     @SuppressWarnings("ConstantConditions")
     public boolean repOk() {
-        // RI = The intList is not null and no elements of intList are null
+        // RI = The genericList is not null and no elements of genericList are null
 
         // NOTE: This is established by the constructor, but we can still check it here.
-        if (intList == null) {
+        if (genericList == null) {
             return false;
         }
 
-        for (E num : intList) {
+        for (E num : genericList) {
             if (num == null) {
                 return false;
             }
@@ -135,17 +135,17 @@ class GenericList<E> implements IList<E> {
 
     @Override
     public Iterator<E> getStandardIterator() {
-        return new StandardListIterator<>(intList);
+        return new StandardListIterator<>(genericList);
     }
 
     @Override
     public Iterator<E> getUniqueIterator() {
-        return new UniqueListIterator<>(intList);
+        return new UniqueListIterator<>(genericList);
     }
 
     @Override
     public Iterator<E> getSortedIterator() {
-        return new SortedListIterator(intList); //TODO:
+        return new SortedListIterator(genericList); //TODO:
     }
 
     private static class StandardListIterator<E> implements Iterator<E> {

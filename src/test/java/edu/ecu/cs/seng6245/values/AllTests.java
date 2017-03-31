@@ -8,7 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ EvenSetIteratorTest.class, ListImplTest.class,
 		SetImplTest.class, SortedListIteratorTest.class,
 		SortedSetIteratorTest.class, StandardListIteratorTest.class,
-		StandardSetIteratorTest.class, UniqueListIteratorTest.class })
+		StandardSetIteratorTest.class, UniqueListIteratorTest.class, HomeWork6Test.class })
 public class AllTests {
 
 }

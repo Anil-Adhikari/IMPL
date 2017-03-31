@@ -14,14 +14,14 @@ import edu.ecu.cs.seng6245.values.ISet;
 
 class GenericSet<E> implements ISet<E> {
     /** The internal representation of the integer set */
-    private final HashSet<E> intSet;
+    private final HashSet<E> genericSet;
 
     /**
      * Create a new, empty set of integers
      *
      */
     public GenericSet() {
-        intSet = new HashSet<>();
+        genericSet = new HashSet<>();
     }
 
     /**
@@ -31,17 +31,17 @@ class GenericSet<E> implements ISet<E> {
      */
     protected GenericSet(HashSet<E> hs) {
         if (hs == null) throw new NullPointerException("Initializing Hash Set cannot be null");
-        intSet = hs;
+        genericSet = hs;
     }
 
     @Override
     public ISet<E> insert(E i) {
         if (i == null) throw new NullPointerException("Element to insert cannot be null");
 
-        if (intSet.contains(i)) {
+        if (genericSet.contains(i)) {
             return this;
         } else {
-            HashSet<E> hs = new HashSet<>(intSet);
+            HashSet<E> hs = new HashSet<>(genericSet);
             hs.add(i);
             return new GenericSet<>(hs);
         }
@@ -51,10 +51,10 @@ class GenericSet<E> implements ISet<E> {
     public ISet<E> remove(E i) {
         if (i == null) throw new NullPointerException("Element to remove cannot be null");
 
-        if (!intSet.contains(i)) {
+        if (!genericSet.contains(i)) {
             return this;
         } else {
-            HashSet<E> hs = new HashSet<>(intSet);
+            HashSet<E> hs = new HashSet<>(genericSet);
             hs.remove(i);
             return new GenericSet<>(hs);
         }
@@ -63,20 +63,20 @@ class GenericSet<E> implements ISet<E> {
     @Override
     public boolean in(E i) {
         if (i == null) throw new NullPointerException("Element to check for membership cannot be null");
-        return intSet.contains(i);
+        return genericSet.contains(i);
     }
 
     @Override
     public Integer size() {
-        return intSet.size();
+        return genericSet.size();
     }
 
     @Override
     public E getOneFrom() {
-        if (intSet.isEmpty()) {
+        if (genericSet.isEmpty()) {
             throw new EmptySetException("getOneFrom cannot be called on an empty set");
         }
-        List<E> lst = new ArrayList<>(intSet);
+        List<E> lst = new ArrayList<>(genericSet);
         Collections.shuffle(lst);
         return lst.get(0);
     }
@@ -85,7 +85,7 @@ class GenericSet<E> implements ISet<E> {
     public ISet<E> union(ISet<E> set) {
         // Returns a new set with all the elements of two sets both common and uncommon element
         HashSet<E> pset = new HashSet<>();
-        for(E elm : this.intSet){
+        for(E elm : this.genericSet){
             pset.add(elm);
         }
         Iterator<E> itr = set.getStandardIterator();
@@ -100,7 +100,7 @@ class GenericSet<E> implements ISet<E> {
     public ISet<E> intersection(ISet<E> set) {
         // Returns a new set with only the common element among two sets
         HashSet<E> pset = new HashSet<>();
-        for(E elm : this.intSet){
+        for(E elm : this.genericSet){
             Iterator<E> itr = set.getStandardIterator();
             while(itr.hasNext()){
                 if(elm.equals(itr.next())) pset.add(elm);
@@ -113,13 +113,13 @@ class GenericSet<E> implements ISet<E> {
     public boolean subsetOf(ISet<E> set) {
         // Returns true if this is subset of set
         int count = 0;
-        for(E elm : this.intSet){
+        for(E elm : this.genericSet){
             Iterator<E> itr = set.getStandardIterator();
             while(itr.hasNext()){
                 if(elm.equals(itr.next())) count++;
             }
         }
-        return count == this.intSet.size();
+        return count == this.genericSet.size();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -129,7 +129,7 @@ class GenericSet<E> implements ISet<E> {
         // it, but it doesn't hurt to have it so I just left it here.
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((intSet == null) ? 0 : intSet.hashCode());
+        result = prime * result + ((genericSet == null) ? 0 : genericSet.hashCode());
         return result;
     }
 
@@ -145,10 +145,10 @@ class GenericSet<E> implements ISet<E> {
         if (getClass() != obj.getClass())
             return false;
         GenericSet other = (GenericSet) obj;
-        if (intSet == null) {
-            if (other.intSet != null)
+        if (genericSet == null) {
+            if (other.genericSet != null)
                 return false;
-        } else if (!intSet.equals(other.intSet))
+        } else if (!genericSet.equals(other.genericSet))
             return false;
         return true;
     }
@@ -157,12 +157,12 @@ class GenericSet<E> implements ISet<E> {
     public String toString() {
         // NOTE: This assumes that toArray is run once, since we have no guarantee
         // on the order in which elements are returned.
-        // AF(c) = { c.intSet.toArray[i].intValue | 0 <= i < c.intSet.size }
+        // AF(c) = { c.genericSet.toArray[i].intValue | 0 <= i < c.genericSet.size }
 
         StringBuilder buf = new StringBuilder();
         buf.append("{");
         boolean firstItem = true;
-        for (E i : intSet) {
+        for (E i : genericSet) {
             if (!firstItem) {
                 buf.append(", ");
             } else {
@@ -181,15 +181,15 @@ class GenericSet<E> implements ISet<E> {
      */
     @SuppressWarnings("ConstantConditions")
     public boolean repOk() {
-        // RI = The intSet is not null and no elements of intSet are null and there are
-        //      no duplicates in the intSet and intSet.size > 1
+        // RI = The genericSet is not null and no elements of genericSet are null and there are
+        //      no duplicates in the genericSet and genericSet.size > 1
 
         // NOTE: This is established by the constructor, but we can still check it here.
-        if (intSet == null) {
+        if (genericSet == null) {
             return false;
         }
 
-        for (E num : intSet) {
+        for (E num : genericSet) {
             if (num == null) {
                 return false;
             }
@@ -198,7 +198,7 @@ class GenericSet<E> implements ISet<E> {
         // NOTE: The HashSet already takes care of duplicates, but if we wanted to check
         // for them anyway, we would want to do something like the following
         HashSet<E> seenBefore = new HashSet<>();
-        for (E num : intSet) {
+        for (E num : genericSet) {
             if (seenBefore.contains(num)) {
                 return false;
             }
@@ -210,17 +210,17 @@ class GenericSet<E> implements ISet<E> {
 
     @Override
     public Iterator<E> getStandardIterator() {
-        return new StandardSetIterator<>(intSet);
+        return new StandardSetIterator<>(genericSet);
     }
 
     @Override
     public Iterator<E> getSortedIterator() {
-        return new SortedSetIterator(intSet); //TODO:
+        return new SortedSetIterator(genericSet); //TODO:
     }
 
     @Override
     public Iterator<Integer> getEvenIterator() {
-        List<E> plist = new ArrayList<>(intSet);
+        List<E> plist = new ArrayList<>(genericSet);
         HashSet<Integer> pset = new HashSet<>();
         for(int i = 0; i < plist.size();i++){
             if(plist.get(i) instanceof Integer){
