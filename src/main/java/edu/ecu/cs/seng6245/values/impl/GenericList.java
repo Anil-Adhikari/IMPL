@@ -10,14 +10,14 @@ import edu.ecu.cs.seng6245.values.IList;
  * Implementation of a mutable list of integers.
  *
  */
-class GenericList<E> implements IList<E> {
+class GenericList<E extends Comparable<E>> implements IList<E> {
     /** The internal representation of the integer list */
     private final LinkedList<E> genericList;
 
     /**
      * Create a new, empty list of integers.
      */
-    protected GenericList() {
+    GenericList() {
         genericList = new LinkedList<>();
     }
 
@@ -145,14 +145,14 @@ class GenericList<E> implements IList<E> {
 
     @Override
     public Iterator<E> getSortedIterator() {
-        return new SortedListIterator(genericList); //TODO:
+        return new SortedListIterator<>(genericList);
     }
 
     private static class StandardListIterator<E> implements Iterator<E> {
         private int currentIndex;
         private final List<E> localList;
 
-        public StandardListIterator(List<E> intList) {
+        StandardListIterator(List<E> intList) {
             localList = intList;
             currentIndex = 0;
         }
@@ -177,7 +177,7 @@ class GenericList<E> implements IList<E> {
         private HashSet<E> seenBefore;
         private int currentIndex = 0;
 
-        public UniqueListIterator(List<E> intList) {
+        UniqueListIterator(List<E> intList) {
             localList = intList;
             seenBefore = new HashSet<>();
         }
@@ -205,7 +205,7 @@ class GenericList<E> implements IList<E> {
         private final List<E> localList;
         private int currentIndex;
 
-        public SortedListIterator(List<E> intList) {
+        SortedListIterator(List<E> intList) {
             List<E> l = new LinkedList<>(intList);
             // This sorts in place, so we really do need to make the copy above
             Collections.sort(l); //sort only works on the type E which is comparable or extends generic Comparable

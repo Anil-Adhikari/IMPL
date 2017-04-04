@@ -12,7 +12,7 @@ import java.util.Set;
 import edu.ecu.cs.seng6245.imp.exceptions.EmptySetException;
 import edu.ecu.cs.seng6245.values.ISet;
 
-class GenericSet<E> implements ISet<E> {
+class GenericSet<E extends Comparable<E>> implements ISet<E> {
     /** The internal representation of the integer set */
     private final HashSet<E> genericSet;
 
@@ -20,7 +20,7 @@ class GenericSet<E> implements ISet<E> {
      * Create a new, empty set of integers
      *
      */
-    public GenericSet() {
+    GenericSet() {
         genericSet = new HashSet<>();
     }
 
@@ -29,7 +29,7 @@ class GenericSet<E> implements ISet<E> {
      *
      * @param hs The set backing our integer set implementation.
      */
-    protected GenericSet(HashSet<E> hs) {
+    private GenericSet(HashSet<E> hs) {
         if (hs == null) throw new NullPointerException("Initializing Hash Set cannot be null");
         genericSet = hs;
     }
@@ -215,16 +215,16 @@ class GenericSet<E> implements ISet<E> {
 
     @Override
     public Iterator<E> getSortedIterator() {
-        return new SortedSetIterator(genericSet); //TODO:
+        return new SortedSetIterator<>(genericSet);
     }
 
     @Override
     public Iterator<Integer> getEvenIterator() {
         List<E> plist = new ArrayList<>(genericSet);
         HashSet<Integer> pset = new HashSet<>();
-        for(int i = 0; i < plist.size();i++){
-            if(plist.get(i) instanceof Integer){
-                pset.add((Integer) plist.get(i));
+        for (E aPlist : plist) {
+            if (aPlist instanceof Integer) {
+                pset.add((Integer) aPlist);
             }
         }
         return new EvenSetIterator(pset);
@@ -234,7 +234,7 @@ class GenericSet<E> implements ISet<E> {
         private final List<E> localSetAsList;
         private int currentIndex;
 
-        public StandardSetIterator(Set<E> intSet) {
+        StandardSetIterator(Set<E> intSet) {
             // We turn this into a list so we can use standard indexing operations
             // to work our way through; we could also use the normal iterator returned
             // by the set itself, in which case we would have an instance variable
@@ -262,7 +262,7 @@ class GenericSet<E> implements ISet<E> {
         private final List<E> localSetAsList;
         private int currentIndex;
 
-        public SortedSetIterator(Set<E> intSet) {
+        SortedSetIterator(Set<E> intSet) {
             List<E> l = new ArrayList<>(intSet);
             Collections.sort(l);
             localSetAsList = l;
@@ -288,7 +288,7 @@ class GenericSet<E> implements ISet<E> {
         private final List<Integer> localSetAsList;
         private int currentIndex;
 
-        public EvenSetIterator(Set<Integer> intSet) {
+        EvenSetIterator(Set<Integer> intSet) {
             localSetAsList = new LinkedList<>(intSet);
             currentIndex = 0;
             while (currentIndex < localSetAsList.size() && localSetAsList.get(currentIndex) % 2 == 1) {
