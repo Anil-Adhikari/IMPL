@@ -17,57 +17,57 @@ public class HomeWork6Test {
     @Test
     public void getHeadFromNonEmptyGenericListTest(){
         IList<Integer> ilist = ValueFactory.getValueFactory().makeIntegerList().insertAtEnd(1).insertAtEnd(2).insertAtEnd(3);
-        assertEquals("Getting head from the list", 1,ilist.head().intValue());
+        assertEquals("Head of the list", 1,ilist.head().intValue());
     }
 
     @Test(expected = EmptyListException.class)
     public void getHeadFromEmptyGenericListTest(){
         IList<Integer> ilist = ValueFactory.getValueFactory().makeIntegerList();
-        assertEquals("Getting head from the empty list", 1,ilist.head().intValue());
+        assertEquals("Head of empty list", 1,ilist.head().intValue());
     }
 
     @Test
     public void getTailFromNonEmptyGenericListTest(){
         IList<Integer> ilist = ValueFactory.getValueFactory().makeIntegerList().insertAtEnd(1).insertAtEnd(2).insertAtEnd(3);
-        assertEquals("Getting tail from the list", "[2, 3]",ilist.tail().toString());
-        assertEquals("Size of tail is one less than original list",ilist.size()-1,ilist.tail().size().intValue());
+        assertEquals("Tail of the list", "[2, 3]",ilist.tail().toString());
     }
 
     @Test(expected = EmptyListException.class)
     public void getTailFromEmptyGenericListTest(){
         IList<Integer> ilist = ValueFactory.getValueFactory().makeIntegerList();
-        assertEquals("Getting tail from the empty list", "",ilist.tail().toString());
+        assertEquals("Tail of empty list", "",ilist.tail().toString());
     }
 
     @Test
     public void unionOfTwoGenericSetTest(){
         ISet<Integer> iset1 = ValueFactory.getValueFactory().makeIntegerSet().insert(1).insert(2).insert(3);
         ISet<Integer> iset2 = ValueFactory.getValueFactory().makeIntegerSet().insert(3).insert(4).insert(5);
-        assertEquals("This contains both the common and non common element", "{1, 2, 3, 4, 5}",iset1.union(iset2).toString());
+        assertEquals("Union set contains both common and uncommon elements", "{1, 2, 3, 4, 5}",iset1.union(iset2).toString());
         assertTrue("Union set contains 5",iset1.union(iset2).toString().contains("5"));
+        assertEquals("Size of union set is 5",5,iset1.union(iset2).size().intValue());
     }
 
     @Test
     public void intersectionOfTwoGenericSetTest(){
         ISet<Integer> iset1 = ValueFactory.getValueFactory().makeIntegerSet().insert(1).insert(2).insert(3);
-        ISet<Integer> iset2 = ValueFactory.getValueFactory().makeIntegerSet().insert(3).insert(4).insert(5);
-        assertEquals("3 is the only common element", "{3}",iset1.intersection(iset2).toString());
+        ISet<Integer> iset2 = ValueFactory.getValueFactory().makeIntegerSet().insert(3).insert(4).insert(5).insert(1);
+        assertEquals("3 is the only common element", "{1, 3}",iset1.intersection(iset2).toString());
         assertTrue("Intersection set contains 3",iset1.intersection(iset2).toString().contains("3"));
     }
 
     @Test
     public void subsetOfTest(){
-        ISet<Integer> iset1 = ValueFactory.getValueFactory().makeIntegerSet().insert(1).insert(2).insert(3);
-        ISet<Integer> iset2 = ValueFactory.getValueFactory().makeIntegerSet();
-        assertTrue("Empty set is subset of every set",iset2.subsetOf(iset1));
-        ISet<Integer> iset3 = iset2.insert(1).insert(3);
-        assertTrue("iset3 is subset of iset1", iset3.subsetOf(iset1));
-        assertFalse("iset1 is not subset of iset3", iset1.subsetOf(iset3));
+        ISet<String> set1 = ValueFactory.getValueFactory().makeStringSet().insert("ABC").insert("BCD").insert("CDE");
+        ISet<String> set2 = ValueFactory.getValueFactory().makeStringSet();
+        assertTrue("Empty set is subset of every set",set2.subsetOf(set1));
+        ISet<String> set3 = set2.insert("BCD").insert("ABC");
+        assertTrue("iset3 is subset of iset1", set3.subsetOf(set1));
+        assertFalse("iset1 is not subset of iset3", set1.subsetOf(set3));
     }
 
     @Test
     public void evenSetGeneratorOnlyWorksonIntegerTest(){
-        ISet<String> iset1 = ValueFactory.getValueFactory().makeStringSet().insert("Nepal").insert("Home").insert("Love");
+        ISet<String> iset1 = ValueFactory.getValueFactory().makeStringSet().insert("asd").insert("bnm").insert("cxv");
         Iterator<Integer> itr = iset1.getEvenIterator();
         ISet<String> iset2 = ValueFactory.getValueFactory().makeStringSet();
         while(itr.hasNext()){
@@ -78,8 +78,8 @@ public class HomeWork6Test {
 
     @Test
     public void stringListTest(){
-        IList<String> ilist = ValueFactory.getValueFactory().makeStringList().insertAtEnd("I").insertAtEnd("Me").insertAtEnd("My");
-        assertTrue("list contains 'I'", ilist.toString().contains("I"));
+        IList<String> slist = ValueFactory.getValueFactory().makeStringList().insertAtEnd("Nepal").insertAtEnd("is").insertAtEnd("Beautiful");
+        assertTrue("list contains 'I'", slist.toString().contains("Nepal"));
     }
 
     @Test
@@ -90,7 +90,15 @@ public class HomeWork6Test {
 
     @Test
     public void booleanListTest(){
-        IList<Boolean> set = ValueFactory.getValueFactory().makeBooleanList().insertAtEnd(false).insertAtEnd(false);
-        assertFalse("set contains true", set.toString().contains("true"));
+        IList<Boolean> list = ValueFactory.getValueFactory().makeBooleanList().insertAtEnd(false).insertAtEnd(false);
+        assertFalse("set contains true", list.toString().contains("true"));
+        assertEquals("size of the booleanlist",2,list.size().intValue());
+    }
+
+    @Test
+    public void subSetOfBooleanSet(){
+        ISet<Boolean> bset = ValueFactory.getValueFactory().makeBooleanSet().insert(true).insert(false).insert(true);
+        ISet<Boolean> b1set = ValueFactory.getValueFactory().makeBooleanSet().insert(true);
+        assertTrue("Subset of boolean set",b1set.subsetOf(bset));
     }
 }

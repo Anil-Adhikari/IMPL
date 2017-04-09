@@ -77,9 +77,10 @@ class GenericList<E extends Comparable<E>> implements IList<E> {
         // Returns the list except first element if the set is not empty, otherwise throws an EmptyListException
         if(genericList.isEmpty()) throw new EmptyListException("The list is empty.");
         GenericList<E> pg = new GenericList<>();
-        for(int i = 1; i < this.size();i++){
-            pg.insertAtEnd(this.genericList.get(i));
+        for(E element: this.genericList){
+            pg.insertAtEnd(element);
         }
+        pg.genericList.remove(0);
         return pg;
     }
 

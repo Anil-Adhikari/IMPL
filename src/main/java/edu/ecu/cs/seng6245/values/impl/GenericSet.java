@@ -84,15 +84,11 @@ class GenericSet<E extends Comparable<E>> implements ISet<E> {
     @Override
     public ISet<E> union(ISet<E> set) {
         // Returns a new set with all the elements of two sets both common and uncommon element
-        HashSet<E> pset = new HashSet<>();
-        for(E elm : this.genericSet){
-            pset.add(elm);
-        }
+        HashSet<E> pset = new HashSet<>(this.genericSet);
         Iterator<E> itr = set.getStandardIterator();
         while(itr.hasNext()){
             pset.add(itr.next());
         }
-
         return new GenericSet<>(pset);
     }
 
