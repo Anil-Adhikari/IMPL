@@ -62,7 +62,7 @@ public class HomeWork6Test {
         assertTrue("Empty set is subset of every set",set2.subsetOf(set1));
         ISet<String> set3 = set2.insert("BCD").insert("ABC");
         assertTrue("iset3 is subset of iset1", set3.subsetOf(set1));
-        assertFalse("iset1 is not subset of iset3", set1.subsetOf(set3));
+        assertFalse("iset1 is not subset of iset3.", set1.subsetOf(set3));
     }
 
     @Test
